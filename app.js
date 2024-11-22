@@ -8,6 +8,10 @@ const { generateExam, writePDF, books } = require("./index");
 
 const app = new Hono();
 
+app.onError((err, c) => {
+  console.error(err);
+});
+
 app.use("*", serveStatic({ root: "./static" }));
 
 app.get("/api/:bookId", async (c) => {

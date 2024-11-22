@@ -1,11 +1,14 @@
 "use strict";
 
-const { serve } = require("@hono/node-server");
 const { Hono } = require("hono");
+const { serve } = require("@hono/node-server");
+const { serveStatic } = require("@hono/node-server/serve-static");
 
 const { generateExam, writePDF, books } = require("./index");
 
 const app = new Hono();
+
+app.use("*", serveStatic({ root: "./static" }));
 
 app.get("/api/:bookId", async (c) => {
   const bookId = c.req.param("bookId");
@@ -30,11 +33,12 @@ app.get("/api/:bookId", async (c) => {
   return c.body(doc);
 });
 
-serve({ fetch: app.fetch, port: 80 });
-
-console.table(
-  Object.entries(books).reduce(
-    (table, [bookId, book]) => ({ ...table, [book.name]: `http://localhost/api/${bookId}` }),
-    {}
-  )
-);
+serve({ fetch: app.fetch, port: 3000 }, (info) => {
+  console.log(`Listening on http://localhost:${info.port}`);
+  console.table(
+    Object.entries(books).reduce(
+      (table, [bookId, book]) => ({ ...table, [book.name]: `http://localhost:${info.port}/api/${bookId}` }),
+      {}
+    )
+  );
+});

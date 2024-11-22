@@ -10,6 +10,7 @@ const app = new Hono();
 
 app.onError((err, c) => {
   console.error(err);
+  return c.status(500).text("Internal Server Error");
 });
 
 app.use("*", serveStatic({ root: "./static" }));
@@ -27,8 +28,8 @@ app.get("/api/pdf/:bookId", async (c) => {
     parseInt(c.req.query("s"), 16),
   ].filter((arg) => arg != null && !Number.isNaN(arg));
 
+  if (!books.hasOwnProperty(bookId)) return c.status(404).json({ error: `${bookId} は存在しません。` });
   const book = books[bookId];
-  if (!book) throw new Error(`${bookId} は存在しません。`);
 
   const words = await book.fetch();
   const exam = await generateExam(words, bookId, book.name, ...examArgs);
@@ -45,8 +46,8 @@ serve({ fetch: app.fetch, port: 3000 }, (info) => {
   console.log(`Listening on http://localhost:${info.port}`);
   console.table(
     Object.entries(books).reduce(
-      (table, [bookId, book]) => ({ ...table, [book.name]: `http://localhost:${info.port}/api/${bookId}` }),
-      {},
-    ),
+      (table, [bookId, book]) => ({ ...table, [book.name]: `http://localhost:${info.port}/api/pdf/${bookId}` }),
+      {}
+    )
   );
 });

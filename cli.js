@@ -5,8 +5,8 @@ const fs = require("fs");
 const { generateExam, writePDF, books } = require("./index");
 
 async function exportPDF(bookId = "complete", pdf = "", ...examArgs) {
+  if (!books.hasOwnProperty(bookId)) throw new Error(`${bookId} は存在しません。`);
   const book = books[bookId];
-  if (!book) throw new Error(`${bookId} は存在しません。`);
 
   const words = await book.fetch();
   const exam = await generateExam(words, bookId, book.name, ...examArgs);
@@ -22,6 +22,6 @@ const [bookId, pdf, range0Str, range1Str, numStr, seedStr] = process.argv.slice(
 
 exportPDF(
   ...[bookId, pdf, parseInt(range0Str), parseInt(range1Str), parseInt(numStr), parseInt(seedStr, 16)].filter(
-    (arg) => arg != null && !Number.isNaN(arg),
-  ),
+    (arg) => arg != null && !Number.isNaN(arg)
+  )
 ).catch(console.error);

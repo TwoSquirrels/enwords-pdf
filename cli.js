@@ -4,7 +4,7 @@ const fs = require("fs");
 
 const { generateExam, writePDF, books } = require("./index");
 
-async function exportPDF(bookId = "complete", pdf = "./exam.pdf", ...examArgs) {
+async function exportPDF(bookId = "complete", pdf = "", ...examArgs) {
   const book = books[bookId];
   if (!book) throw new Error(`${bookId} は存在しません。`);
 
@@ -14,7 +14,7 @@ async function exportPDF(bookId = "complete", pdf = "./exam.pdf", ...examArgs) {
   console.table(exam.answer);
 
   console.log("\nPDF 出力中...");
-  await writePDF(exam, fs.createWriteStream(pdf));
+  await writePDF(exam, fs.createWriteStream(pdf || exam.defaultFileName));
   console.log("PDF 出力完了！");
 }
 
@@ -22,6 +22,6 @@ const [bookId, pdf, range0Str, range1Str, numStr, seedStr] = process.argv.slice(
 
 exportPDF(
   ...[bookId, pdf, parseInt(range0Str), parseInt(range1Str), parseInt(numStr), parseInt(seedStr, 16)].filter(
-    (arg) => arg != null && !Number.isNaN(arg)
-  )
+    (arg) => arg != null && !Number.isNaN(arg),
+  ),
 ).catch(console.error);

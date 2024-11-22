@@ -14,7 +14,11 @@ app.onError((err, c) => {
 
 app.use("*", serveStatic({ root: "./static" }));
 
-app.get("/api/:bookId", async (c) => {
+app.get("/api/books", async (c) => {
+  return c.json(Object.entries(books).map(([bookId, book]) => ({ id: bookId, name: book.name })));
+});
+
+app.get("/api/pdf/:bookId", async (c) => {
   const bookId = c.req.param("bookId");
   const examArgs = [
     parseInt(c.req.query("l")),
@@ -31,7 +35,7 @@ app.get("/api/:bookId", async (c) => {
   const doc = await writePDF(exam);
 
   c.header("Content-Type", "application/pdf");
-  c.header("Content-Disposition", 'attachment; filename="exam.pdf"');
+  c.header("Content-Disposition", `attachment; filename="${exam.defaultFileName}"`);
   c.header("Cache-Control", "no-cache, no-store, must-revalidate");
 
   return c.body(doc);
@@ -42,7 +46,7 @@ serve({ fetch: app.fetch, port: 3000 }, (info) => {
   console.table(
     Object.entries(books).reduce(
       (table, [bookId, book]) => ({ ...table, [book.name]: `http://localhost:${info.port}/api/${bookId}` }),
-      {}
-    )
+      {},
+    ),
   );
 });

@@ -16,7 +16,8 @@ async function fetchFont() {
   try {
     await fs.promises.access(ttf);
   } catch (e) {
-    const URL = "https://github.com/googlefonts/morisawa-biz-ud-gothic/raw/refs/heads/main/fonts/ttf/BIZUDPGothic-Regular.ttf";
+    const URL =
+      "https://github.com/googlefonts/morisawa-biz-ud-gothic/raw/refs/heads/main/fonts/ttf/BIZUDPGothic-Regular.ttf";
     console.log(`モリサワの BIZ UD ゴシックを ${URL} からダウンロード中...`);
     const font = await (await fetch(URL)).arrayBuffer();
 
@@ -29,34 +30,41 @@ async function fetchFont() {
 
 exports.generateExam = async function generateExam(
   words,
+  id,
   name = "英単語テスト",
   range0 = Infinity,
   range1 = 1,
   num = 50,
   seed = null
 ) {
-  const [l, r] = minmax(clamp(range0, 1, words.length), clamp(range1, 1, words.length));
-  const n = clamp(num, 1, r - l + 1);
+  const [left, right] = minmax(clamp(range0, 1, words.length), clamp(range1, 1, words.length));
+  const n = clamp(num, 1, right - left + 1);
   const s = seed || Math.floor(Math.random() * 2 ** 16);
 
   const mt19937 = new MersenneTwister(s);
 
+  const defaultFileName = `enwords-${id}-${left}-${right}-${n}-${s.toString(16).toUpperCase()}.pdf`;
+  const title = `${name} ${left}\u{FF5E}${right} (SEED:${s.toString(16).toUpperCase().padStart(4, "0")})`;
   const w = words
     .map((word) => ({ ...word, r: mt19937.random() }))
-    .filter((word) => word.id >= l && word.id <= r)
+    .filter((word) => word.id >= left && word.id <= right)
     .sort((a, b) => a.r - b.r)
     .slice(0, n);
+
   return {
-    title: `${name} ${l}\u{FF5E}${r} (SEED:${s.toString(16).toUpperCase().padStart(4, "0")})`,
+    defaultFileName,
+    title,
     en2jp: w.map(({ id, en, jp }) => [id, en, "\u{3000}".repeat(jp.length)]),
     jp2en: w.map(({ id, en, jp }) => [id, `(${en[0]})`, jp]),
     answer: w.map(({ id, en, jp }) => [id, en, jp]),
   };
 };
 
-exports.writePDF = async function writePDF(stream, exam) {
+exports.writePDF = async function writePDF(exam, stream = null) {
   const doc = new PDFDocument({ margin: 16, size: "A4" });
-  doc.pipe(stream);
+  if (stream) doc.pipe(stream);
+
+  doc.info.Title = exam.title;
   doc.font(await fetchFont());
 
   const n = exam.answer.length;
@@ -109,7 +117,7 @@ exports.writePDF = async function writePDF(stream, exam) {
               .lineTo(x + dx, y + height)
               .stroke()
           );
-          doc.fontSize(i % 3 === 1 ? 9 : 7);
+          doc.fontSize([7, 9, 8][i % 3]);
         },
       }
     );
@@ -118,6 +126,7 @@ exports.writePDF = async function writePDF(stream, exam) {
   }
 
   doc.end();
+  return doc;
 };
 
 exports.Book = Book;

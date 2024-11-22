@@ -7,7 +7,8 @@
     "enwords": "./cli.js"
   },
   "scripts": {
-    "cli": "node cli.js"
+    "cli": "node cli.js",
+    "start": "tsx watch app.js"
   },
   "keywords": [],
   "author": "TwoSquirrels",
@@ -18,6 +19,9 @@
     "mersenne-twister": "^1.1.0",
     "pdfkit-table": "^0.1.99",
     "tabletojson": "^4.1.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
   },
   "packageManager": "pnpm@9.14.2"
 }

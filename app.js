@@ -10,6 +10,7 @@ const app = new Hono();
 
 app.onError((err, c) => {
   console.error(err);
+  return c.status(500).body("Internal Server Error");
 });
 
 app.use("*", serveStatic({ root: "./static" }));

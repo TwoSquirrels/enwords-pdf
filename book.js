@@ -4,6 +4,8 @@ const path = require("path");
 const fs = require("fs");
 const tabletojson = require("tabletojson").Tabletojson;
 
+const { cacheDir } = require("./cache");
+
 class Book {
   constructor(name, fetcher) {
     this.name = name;
@@ -14,7 +16,7 @@ class Book {
 class UkaruEigo extends Book {
   constructor(name, id) {
     const fetcher = async () => {
-      const json = __dirname + `/.cache/${id}.json`;
+      const json = await cacheDir() + `/${id}.json`;
 
       try {
         return JSON.parse(await fs.promises.readFile(json, "UTF8"));

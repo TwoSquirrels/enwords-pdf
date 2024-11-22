@@ -5,14 +5,13 @@ const fs = require("fs");
 const MersenneTwister = new require("mersenne-twister");
 const PDFDocument = require("pdfkit-table");
 
-const { cacheDir } = require("./cache");
 const { Book, books } = require("./book");
 
 const clamp = (v, low, high) => Math.min(Math.max(v, low), high);
 const minmax = (x, y) => [Math.min(x, y), Math.max(x, y)];
 
 async function fetchFont() {
-  const ttf = await cacheDir() + "/BIZUDPGothic-Regular.ttf";
+  const ttf = __dirname + "/.cache/BIZUDPGothic-Regular.ttf";
 
   try {
     await fs.promises.access(ttf);

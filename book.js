@@ -5,14 +5,15 @@ const fs = require("fs");
 const tabletojson = require("tabletojson").Tabletojson;
 
 class Book {
-  constructor(name, fetcher) {
+  constructor(name, fetcher, asin = null) {
     this.name = name;
     this.fetch = fetcher;
+    this.asin = asin;
   }
 }
 
 class UkaruEigo extends Book {
-  constructor(name, id) {
+  constructor(name, id, asin = null) {
     const fetcher = async () => {
       const json = __dirname + `/.cache/${id}.json`;
 
@@ -32,7 +33,7 @@ class UkaruEigo extends Book {
       }
     };
 
-    super(name, fetcher);
+    super(name, fetcher, asin);
   }
 }
 

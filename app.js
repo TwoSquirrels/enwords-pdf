@@ -16,7 +16,13 @@ app.onError((err, c) => {
 app.use("*", serveStatic({ root: "./static" }));
 
 app.get("/api/books", async (c) => {
-  return c.json(Object.entries(books).map(([bookId, book]) => ({ id: bookId, name: book.name })));
+  return c.json(
+    Object.entries(books).map(([bookId, book]) => ({
+      id: bookId,
+      name: book.name,
+      amazon: book.asin && `https://www.amazon.co.jp/dp/${book.asin}`,
+    }))
+  );
 });
 
 app.get("/api/pdf/:bookId", async (c) => {
@@ -32,6 +38,7 @@ app.get("/api/pdf/:bookId", async (c) => {
   const words = await book.fetch();
   const exam = await generateExam(words, bookId, book.name, range0, range1, num, seed);
   const doc = await writePDF(exam);
+  console.log(`Generated ${exam.defaultFileName}`);
 
   c.header("Content-Type", "application/pdf");
   c.header("Content-Disposition", `attachment; filename="${exam.defaultFileName}"`);

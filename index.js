@@ -39,7 +39,7 @@ exports.generateExam = async function generateExam(
 ) {
   const [left, right] = minmax(clamp(range0, 1, words.length), clamp(range1, 1, words.length));
   const n = clamp(num, 1, right - left + 1);
-  const s = seed || Math.floor(Math.random() * 2 ** 16);
+  const s = seed || Math.floor(Math.random() * 0xffff) + 1;
 
   const mt19937 = new MersenneTwister(s);
 

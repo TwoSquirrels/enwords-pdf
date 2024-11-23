@@ -21,18 +21,16 @@ app.get("/api/books", async (c) => {
 
 app.get("/api/pdf/:bookId", async (c) => {
   const bookId = c.req.param("bookId");
-  const examArgs = [
-    parseInt(c.req.query("l")),
-    parseInt(c.req.query("r")),
-    parseInt(c.req.query("n")),
-    parseInt(c.req.query("s"), 16),
-  ].filter((arg) => arg != null && !Number.isNaN(arg));
+  const range0 = parseInt(c.req.query("l")) || Infinity;
+  const range1 = parseInt(c.req.query("r")) || 1;
+  const num = parseInt(c.req.query("n")) || 50;
+  const seed = parseInt(c.req.query("s"), 16) || null;
 
   if (!books.hasOwnProperty(bookId)) return c.status(404).json({ error: `${bookId} は存在しません。` });
   const book = books[bookId];
 
   const words = await book.fetch();
-  const exam = await generateExam(words, bookId, book.name, ...examArgs);
+  const exam = await generateExam(words, bookId, book.name, range0, range1, num, seed);
   const doc = await writePDF(exam);
 
   c.header("Content-Type", "application/pdf");

@@ -78,7 +78,7 @@ exports.writePDF = async function writePDF(exam, stream = null) {
       .fontSize(16)
       .text(`\n${exam.title}【${{ en2jp: `和訳編`, jp2en: `英訳編`, answer: `解答編` }[name]}】`, { align: "center" });
 
-    doc.fontSize(12).text(`${name === "answer" ? n * 2 : ""}/${n * 2}\n\n`, { align: "right" });
+    doc.fontSize(9).text(`\n\n${name === "answer" ? n * 2 : ""}/${n * 2}\n`, { align: "right" });
 
     const wordAlign = name === "jp2en" ? "left" : "center";
     const headerCommon = { valign: "center", headerColor: "white" };

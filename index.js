@@ -35,7 +35,7 @@ exports.generateExam = async function generateExam(
   range0 = Infinity,
   range1 = 1,
   num = 50,
-  seed = null
+  seed = null,
 ) {
   const [left, right] = minmax(clamp(range0, 1, words.length), clamp(range1, 1, words.length));
   const n = clamp(num, 1, right - left + 1);
@@ -96,7 +96,7 @@ exports.writePDF = async function writePDF(exam, stream = null) {
           rows.length === 0 || rows.at(-1).length >= 6
             ? [...rows, row]
             : [...rows.slice(0, rows.length - 1), [...rows.at(-1), ...row]],
-        []
+        [],
       )
       .map((row) => [...row, ...new Array(6 - row.length)]);
     await doc.table(
@@ -116,11 +116,11 @@ exports.writePDF = async function writePDF(exam, stream = null) {
               .lineWidth(0.5)
               .moveTo(x + dx, y)
               .lineTo(x + dx, y + height)
-              .stroke()
+              .stroke(),
           );
           doc.fontSize([7, 9, 8][i % 3]);
         },
-      }
+      },
     );
 
     isLeft = false;

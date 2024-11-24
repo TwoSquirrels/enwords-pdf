@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 "use strict";
 
 const fs = require("fs");
@@ -21,7 +23,12 @@ async function exportPDF(bookId = "complete", pdf = "", ...examArgs) {
 const [bookId, pdf, range0Str, range1Str, numStr, seedStr] = process.argv.slice(2);
 
 exportPDF(
-  ...[bookId, pdf, parseInt(range0Str), parseInt(range1Str), parseInt(numStr), parseInt(seedStr, 16)].filter(
-    (arg) => arg != null && !Number.isNaN(arg)
-  )
+  ...[
+    bookId.toLowerCase(),
+    pdf,
+    parseInt(range0Str),
+    parseInt(range1Str),
+    parseInt(numStr),
+    parseInt(seedStr, 16),
+  ].filter((arg) => arg != null && !Number.isNaN(arg)),
 ).catch(console.error);

@@ -21,12 +21,12 @@ app.get("/api/books", async (c) => {
       id: bookId,
       name: book.name,
       amazon: book.asin && `https://www.amazon.co.jp/dp/${book.asin}`,
-    }))
+    })),
   );
 });
 
 app.get("/api/pdf/:bookId", async (c) => {
-  const bookId = c.req.param("bookId");
+  const bookId = c.req.param("bookId").toLowerCase();
   const range0 = parseInt(c.req.query("l")) || Infinity;
   const range1 = parseInt(c.req.query("r")) || 1;
   const num = parseInt(c.req.query("n")) || 50;
@@ -52,7 +52,7 @@ serve({ fetch: app.fetch, port: 3000 }, (info) => {
   console.table(
     Object.entries(books).reduce(
       (table, [bookId, book]) => ({ ...table, [book.name]: `http://localhost:${info.port}/api/pdf/${bookId}` }),
-      {}
-    )
+      {},
+    ),
   );
 });

@@ -21,7 +21,7 @@ class UkaruEigo extends Book {
           .readFile(this.jsonPath, "UTF8")
           .then((file) => JSON.parse(file))
           .catch((_e) => this.download()),
-      asin
+      asin,
     );
 
     this.ukaruEigoId = id;
@@ -51,10 +51,10 @@ exports.Book = Book;
 exports.books = {
   complete: new UkaruEigo("有名単語帳融合", "complete-word-list"),
   leap: new UkaruEigo("必携英単語 LEAP", "leap-word-list", "4410144227"),
-  passtanP1: new UkaruEigo("英検準１級 でる順パス単 (５訂版)", "passtan-p1-word-list", "401094983X"),
+  passtan: new UkaruEigo("英検準１級 でる順パス単 (５訂版)", "passtan-p1-word-list", "401094983X"),
   systan: new UkaruEigo("システム英単語 (５訂版)", "systan-word-list", "4796111379"),
-  tangoOu: new UkaruEigo("単語王 2202", "tango-ou-word-list", "404604411X"),
-  tanjukugoexP1: new UkaruEigo("英検準１級 単熟語 EX (第２版)", "tanjukugoex-p1-word-list", "B0C23NPYK7"),
+  tango_ou: new UkaruEigo("単語王 2202", "tango-ou-word-list", "404604411X"),
+  tanjukugoex: new UkaruEigo("英検準１級 単熟語 EX (第２版)", "tanjukugoex-p1-word-list", "B0C23NPYK7"),
   target1400: new UkaruEigo("英単語ターゲット 1400 (５訂版)", "target-1400-word-list", "4010346477"),
   target1400only: new UkaruEigo("英単語ターゲット not 1900 but 1400", "target-1400-only"),
   target1900: new UkaruEigo("英単語ターゲット 1900 (６訂版)", "target-1900-word-list", "4010346469"),

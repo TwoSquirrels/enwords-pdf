@@ -87,7 +87,7 @@ async function onLoaded() {
     btn.addEventListener("click", () => {
       previewEmbeds.forEach((embed) => {
         embed.src = `https://drive.google.com/viewerng/viewer?embedded=true&url=${encodeURIComponent(
-          window.location.origin + pdfPath
+          window.location.origin + pdfPath,
         )}`;
       });
     });
@@ -118,10 +118,10 @@ async function onLoaded() {
             link.textContent = name;
             link.appendChild(externalIcon.cloneNode());
             return link;
-          })()
+          })(),
         );
         return card;
-      })()
+      })(),
     );
     nextBooksList.appendChild(cardWrapper);
   }

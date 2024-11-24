@@ -13,7 +13,13 @@ function updateValidity(elm) {
   }
 }
 
-function onLoaded() {
+const externalIcon = document.createElement("i");
+externalIcon.classList.add("bi", "bi-box-arrow-up-right", "mb-2");
+externalIcon.setAttribute("aria-hidden", "true");
+
+const books = fetch("/api/books").then((res) => res.json());
+
+async function onLoaded() {
   const form = document.querySelector("form#enwords-form");
   const inputs = form.querySelectorAll("input,select,textarea");
   const bookSelect = form.querySelector("select#enwords-book");
@@ -25,6 +31,7 @@ function onLoaded() {
   const previewButtons = form.querySelectorAll("button.enwords-generate-preview");
   const downloadLinks = form.querySelectorAll("a.enwords-download");
   const previewEmbeds = document.querySelectorAll("embed.enwords-preview");
+  const booksList = document.querySelector("div#enwords-books");
 
   let pdfPath = "";
 
@@ -43,7 +50,7 @@ function onLoaded() {
 
     pdfPath =
       `/api/pdf/${bookSelect.value}` +
-      `?l=${leftInput.value ?? 1}&r=${rightInput.value ?? 5000}&n=${numInput.value}&s=${seedInput.value}`;
+      `?l=${leftInput.value ?? 1}&r=${rightInput.value ?? 5000}&n=${numInput.value ?? 50}&s=${seedInput.value}`;
     previewButtons.forEach((btn) => {
       btn.disabled = false;
     });
@@ -53,9 +60,20 @@ function onLoaded() {
     });
   };
 
+  const randomSeedStr = () => (Math.floor(Math.random() * 0xffff) + 1).toString(16).toUpperCase().padStart(4, "0");
+
+  seedRandomButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      seedInput.value = randomSeedStr();
+      updateValidity(seedInput);
+      update();
+    });
+  });
+
+  seedInput.value = randomSeedStr();
+
   inputs.forEach((input) => {
     updateValidity(input);
-    update();
 
     input.addEventListener("input", ({ target }) => {
       updateValidity(target);
@@ -63,13 +81,7 @@ function onLoaded() {
     });
   });
 
-  seedRandomButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      seedInput.value = (Math.floor(Math.random() * 0xffff) + 1).toString(16).toUpperCase().padStart(4, "0");
-      updateValidity(seedInput);
-      update();
-    });
-  });
+  update();
 
   previewButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -81,21 +93,43 @@ function onLoaded() {
     });
   });
 
-  fetch("/api/books")
-    .then((res) => res.json())
-    .then((books) => {
-      books.forEach((book) => {
-        const option = document.createElement("option");
-        option.value = book.id;
-        option.textContent = book.name;
-        bookSelect.appendChild(option);
-      });
-    })
-    .catch(console.error);
+  const nextBooksList = booksList.cloneNode(false);
+  for (const { id, name, amazon } of await books) {
+    const option = document.createElement("option");
+    option.value = id;
+    option.textContent = name;
+    bookSelect.appendChild(option);
+
+    if (!amazon) continue;
+
+    const cardWrapper = document.createElement("div");
+    cardWrapper.classList.add("col-md-6", "p-1");
+    cardWrapper.appendChild(
+      (() => {
+        const card = document.createElement("div");
+        card.classList.add("card", "display-relative");
+        card.appendChild(
+          (() => {
+            const link = document.createElement("a");
+            link.classList.add("card-body", "stretched-link", "icon-link", "justify-content-between");
+            link.href = amazon;
+            link.target = "_blank";
+            link.rel = "noreferrer";
+            link.textContent = name;
+            link.appendChild(externalIcon.cloneNode());
+            return link;
+          })()
+        );
+        return card;
+      })()
+    );
+    nextBooksList.appendChild(cardWrapper);
+  }
+  booksList.replaceWith(nextBooksList);
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", onLoaded);
+  document.addEventListener("DOMContentLoaded", ({}) => onLoaded().catch(console.error));
 } else {
-  onLoaded();
+  onLoaded().catch(console.error);
 }

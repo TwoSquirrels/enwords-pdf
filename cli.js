@@ -24,7 +24,7 @@ const [bookId, pdf, range0Str, range1Str, numStr, seedStr] = process.argv.slice(
 
 exportPDF(
   ...[
-    bookId.toLowerCase(),
+    bookId?.toLowerCase(),
     pdf,
     parseInt(range0Str),
     parseInt(range1Str),

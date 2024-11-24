@@ -26,7 +26,7 @@ app.get("/api/books", async (c) => {
 });
 
 app.get("/api/pdf/:bookId", async (c) => {
-  const bookId = c.req.param("bookId").toLowerCase();
+  const bookId = c.req.param("bookId")?.toLowerCase();
   const range0 = parseInt(c.req.query("l")) || Infinity;
   const range1 = parseInt(c.req.query("r")) || 1;
   const num = parseInt(c.req.query("n")) || 50;

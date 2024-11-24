@@ -44,7 +44,7 @@ exports.generateExam = async function generateExam(
   const mt19937 = new MersenneTwister(s);
 
   const seedStr = s.toString(16).toUpperCase().padStart(4, "0");
-  const defaultFileName = `enwords-${id}-${left}-${right}-${n}-${seedStr}.pdf`;
+  const defaultFileName = `enwords-${id}-${left.toString().padStart(4, "0")}-${right.toString().padStart(4, "0")}-${n.toString().padStart(3, "0")}-${seedStr}.pdf`;
   const title = `${name} ${left}\u{FF5E}${right} (SEED:${seedStr})`;
   const w = words
     .map((word) => ({ ...word, r: mt19937.random() }))

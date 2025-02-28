@@ -5,20 +5,21 @@
 
 シンプルな英単語テストの PDF を生成するツールです。Web と CLI から利用できます。単語帳の英単語リストは、[受かる英語](https://ukaru-eigo.com/) 様のデータを使用しています。
 
+> [!IMPORTANT]
+> このツールを利用するには、Node.js と pnpm が必要です。
+
 ## Web での利用方法
 
-<https://enwords-pdf.trap.show/> にアクセスし、UI に従って操作してください。
+クローンしたこのリポジトリのディレクトリ内で `pnpm start` を実行すると、<http://localhost:3000> にサイトが立ち上がります。
+このサイトをホスティングしてアクセスし、UI に従って操作してください。
 
 ## CLI での利用方法
 
-> [!IMPORTANT]
-> このツールを利用するには、Git と Node.js と pnpm が必要です。
-
 ### インストール
 
+クローンしたこのリポジトリのディレクトリ内で、以下のコマンドを実行してください。
+
 ```bash
-git clone git@github.com:TwoSquirrels/enwords-pdf.git
-cd enwords-pdf
 pnpm pack
 npm install -g enwords-pdf-*.tgz
 ```

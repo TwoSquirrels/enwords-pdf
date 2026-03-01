@@ -1,9 +1,11 @@
 # enwords-pdf
 
-**© 2024 TwoSquirrels**  
+**© 2026 TwoSquirrels**  
 ライセンス: [MIT License](LICENSE)
 
 シンプルな英単語テストの PDF を生成するツールです。Web と CLI から利用できます。単語帳の英単語リストは、[受かる英語](https://ukaru-eigo.com/) 様のデータを使用しています。
+
+本ツールの利用をもって、私的利用の範囲内での使用に同意したものとみなします。
 
 > [!IMPORTANT]
 > このツールを利用するには、Node.js と pnpm が必要です。

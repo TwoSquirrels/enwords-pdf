@@ -15,15 +15,15 @@
   "author": "TwoSquirrels",
   "license": "ISC",
   "dependencies": {
-    "@hono/node-server": "^1.13.7",
-    "hono": "^4.6.11",
+    "@hono/node-server": "^1.19.9",
+    "hono": "^4.12.3",
     "mersenne-twister": "^1.1.0",
     "pdfkit-table": "^0.1.99",
-    "tabletojson": "^4.1.5",
-    "tsx": "^4.19.2"
+    "tabletojson": "^4.1.8",
+    "tsx": "^4.21.0"
   },
   "packageManager": "pnpm@9.14.2",
   "devDependencies": {
-    "prettier": "^3.3.3"
+    "prettier": "^3.8.1"
   }
 }

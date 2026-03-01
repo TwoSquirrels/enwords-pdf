@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2024 TwoSquirrels
+// Copyright (c) 2026 TwoSquirrels
 
 "use strict";
 
@@ -34,6 +34,7 @@ async function onLoaded() {
   const booksList = document.querySelector("div#enwords-books");
 
   let pdfPath = "";
+  let previewUrl = "";
 
   const update = () => {
     const validity = form.checkValidity();
@@ -84,11 +85,12 @@ async function onLoaded() {
   update();
 
   previewButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
+      const blob = await fetch(pdfPath).then((res) => res.blob());
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = URL.createObjectURL(blob);
       previewEmbeds.forEach((embed) => {
-        embed.src = `https://drive.google.com/viewerng/viewer?embedded=true&url=${encodeURIComponent(
-          window.location.origin + pdfPath,
-        )}`;
+        embed.src = previewUrl;
       });
     });
   });

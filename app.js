@@ -1,10 +1,9 @@
 "use strict";
 
-const { Hono } = require("hono");
-const { serve } = require("@hono/node-server");
-const { serveStatic } = require("@hono/node-server/serve-static");
-
-const { generateExam, writePDF, books } = require("./index");
+import { Hono } from "hono";
+import { serve } from "@hono/node-server";
+import { serveStatic } from "@hono/node-server/serve-static";
+import { generateExam, writePDF, books } from "./index.js";
 
 const app = new Hono();
 

@@ -1,17 +1,16 @@
 "use strict";
 
-const path = require("path");
-const fs = require("fs");
-const MersenneTwister = new require("mersenne-twister");
-const PDFDocument = require("pdfkit-table");
-
-const { Book, books } = require("./book");
+import path from "path";
+import fs from "fs";
+import MersenneTwister from "mersenne-twister";
+import PDFDocument from "pdfkit-table";
+import { Book, books } from "./book.js";
 
 const clamp = (v, low, high) => Math.min(Math.max(v, low), high);
 const minmax = (x, y) => [Math.min(x, y), Math.max(x, y)];
 
 async function fetchFont() {
-  const ttf = __dirname + "/.cache/BIZUDPGothic-Regular.ttf";
+  const ttf = path.join(import.meta.dirname, ".cache", "BIZUDPGothic-Regular.ttf");
 
   try {
     await fs.promises.access(ttf);
@@ -28,7 +27,7 @@ async function fetchFont() {
   return ttf;
 }
 
-exports.generateExam = async function generateExam(
+export async function generateExam(
   words,
   id,
   name = "英単語テスト",
@@ -55,13 +54,13 @@ exports.generateExam = async function generateExam(
   return {
     defaultFileName,
     title,
-    en2jp: w.map(({ id, en, jp }) => [id, en, "\u{3000}".repeat(jp.length)]),
-    jp2en: w.map(({ id, en, jp }) => [id, `(${en[0]})`, jp]),
-    answer: w.map(({ id, en, jp }) => [id, en, jp]),
+    en2jp: w.map(({ id, en, jp }) => [`${id}`, en, "\u{3000}".repeat(jp.length)]),
+    jp2en: w.map(({ id, en, jp }) => [`${id}`, en.match(/\s/) ? `\n${en.replace(/(?<=\w)\w/g, "___")}\n\n` : `(${en[0]})`, jp]),
+    answer: w.map(({ id, en, jp }) => [`${id}`, en, jp]),
   };
-};
+}
 
-exports.writePDF = async function writePDF(exam, stream = null) {
+export async function writePDF(exam, stream = null) {
   const doc = new PDFDocument({ margin: 16, size: "A4" });
   if (stream) doc.pipe(stream);
 
@@ -84,10 +83,10 @@ exports.writePDF = async function writePDF(exam, stream = null) {
     const headerCommon = { valign: "center", headerColor: "white" };
     const headers = [
       { label: "番号", width: 30, align: "right", ...headerCommon },
-      { label: "単語", width: 100, align: wordAlign, ...headerCommon },
+      { label: "単語・熟語", width: 100, align: wordAlign, ...headerCommon },
       { label: "意味", width: 150, align: "left", ...headerCommon },
       { label: "番号", width: 30, align: "right", ...headerCommon },
-      { label: "単語", width: 100, align: wordAlign, ...headerCommon },
+      { label: "単語・熟語", width: 100, align: wordAlign, ...headerCommon },
       { label: "意味", width: 150, align: "left", ...headerCommon },
     ];
     const rows = exam[name]
@@ -110,7 +109,7 @@ exports.writePDF = async function writePDF(exam, stream = null) {
         padding: 4,
         minRowHeight: clamp(560 / Math.ceil(exam[name].length / 2), 20, 40),
         prepareHeader: () => doc.fontSize(10),
-        prepareRow: (_row, i, _j, _rectRow, { x, y, width, height }) => {
+        prepareRow: (row, i, _j, _rectRow, { x, y, width, height }) => {
           (i === 0 ? [0, width] : [width]).forEach((dx) =>
             doc
               .lineWidth(0.5)
@@ -128,8 +127,6 @@ exports.writePDF = async function writePDF(exam, stream = null) {
 
   doc.end();
   return doc;
-};
+}
 
-exports.Book = Book;
-
-exports.books = books;
+export { Book, books };

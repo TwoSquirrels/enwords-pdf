@@ -2,9 +2,8 @@
 
 "use strict";
 
-const fs = require("fs");
-
-const { generateExam, writePDF, books } = require("./index");
+import fs from "fs";
+import { generateExam, writePDF, books } from "./index.js";
 
 async function exportPDF(bookId = "complete", pdf = "", ...examArgs) {
   if (!books.hasOwnProperty(bookId)) throw new Error(`${bookId} は存在しません。`);

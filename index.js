@@ -9,7 +9,7 @@ import { Book, books } from "./book.js";
 const clamp = (v, low, high) => Math.min(Math.max(v, low), high);
 const minmax = (x, y) => [Math.min(x, y), Math.max(x, y)];
 
-async function fetchFont() {
+export async function fetchFont() {
   const ttf = path.join(import.meta.dirname, ".cache", "BIZUDPGothic-Regular.ttf");
 
   try {
@@ -55,7 +55,11 @@ export async function generateExam(
     defaultFileName,
     title,
     en2jp: w.map(({ id, en, jp }) => [`${id}`, en, "\u{3000}".repeat(jp.length)]),
-    jp2en: w.map(({ id, en, jp }) => [`${id}`, en.match(/\s/) ? `\n${en.replace(/(?<=\w)\w/g, "___")}\n\n` : `(${en[0]})`, jp]),
+    jp2en: w.map(({ id, en, jp }) => [
+      `${id}`,
+      en.match(/\s/) ? `\n${en.replace(/(?<=\w)\w/g, "___")}\n\n` : `(${en[0]})`,
+      jp,
+    ]),
     answer: w.map(({ id, en, jp }) => [`${id}`, en, jp]),
   };
 }

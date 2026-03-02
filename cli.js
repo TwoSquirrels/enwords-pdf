@@ -21,7 +21,7 @@ async function exportPDF(bookId = "complete", pdf = "", ...examArgs) {
 
 const [bookId, pdf, range0Str, range1Str, numStr, seedStr] = process.argv.slice(2);
 
-exportPDF(
+await exportPDF(
   ...[
     bookId?.toLowerCase(),
     pdf,
@@ -30,4 +30,4 @@ exportPDF(
     parseInt(numStr),
     parseInt(seedStr, 16),
   ].filter((arg) => arg != null && !Number.isNaN(arg)),
-).catch(console.error);
+);

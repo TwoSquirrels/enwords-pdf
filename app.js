@@ -3,7 +3,7 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
-import { generateExam, writePDF, books } from "./index.js";
+import { generateExam, writePDF, books, fetchFont } from "./index.js";
 
 const app = new Hono();
 
@@ -45,6 +45,8 @@ app.get("/api/pdf/:bookId", async (c) => {
 
   return c.body(doc);
 });
+
+await fetchFont();
 
 serve({ fetch: app.fetch, port: 3000 }, (info) => {
   console.log(`Listening on http://localhost:${info.port}`);

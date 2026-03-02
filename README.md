@@ -29,10 +29,10 @@ npm install -g enwords-pdf-*.tgz
 ### 使い方
 
 ```bash
-enwords-pdf [単語帳 ID] [出力ファイル名] [範囲の始まり] [範囲の終わり] [問題数] [シード値]
+enwords [単語帳 ID] [出力ファイル名] [範囲の始まり] [範囲の終わり] [問題数] [シード値]
 ```
 
-例: `enwords-pdf systan exam.pdf 501 600 30 1234`
+例: `enwords systan exam.pdf 501 600 30 1234`
 
 ### 単語帳 ID 一覧
 

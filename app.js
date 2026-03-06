@@ -40,7 +40,7 @@ app.get("/api/pdf/:bookId", async (c) => {
   console.log(`Generated ${exam.defaultFileName}`);
 
   c.header("Content-Type", "application/pdf");
-  c.header("Content-Disposition", `attachment; filename="${exam.defaultFileName}"`);
+  c.header("Content-Disposition", `inline; filename="${exam.defaultFileName}"`);
   c.header("Cache-Control", "no-cache, no-store, must-revalidate");
 
   return c.body(doc);

@@ -19,6 +19,8 @@ externalIcon.setAttribute("aria-hidden", "true");
 
 const books = fetch("/api/books").then((res) => res.json());
 
+const canSharePdf = navigator?.canShare?.({ files: [new File([""], "test.pdf", { type: "application/pdf" })] }) ?? false;
+
 async function onLoaded() {
   const form = document.querySelector("form#enwords-form");
   const inputs = form.querySelectorAll("input,select,textarea");
@@ -29,12 +31,12 @@ async function onLoaded() {
   const seedInput = form.querySelector("input#enwords-seed");
   const seedRandomButtons = form.querySelectorAll("button.enwords-seed-random");
   const previewButtons = form.querySelectorAll("button.enwords-generate-preview");
-  const downloadLinks = form.querySelectorAll("a.enwords-download");
-  const previewEmbeds = document.querySelectorAll("embed.enwords-preview");
+  const downloadButtons = form.querySelectorAll("button.enwords-download");
+  const previewIframes = document.querySelectorAll("iframe.enwords-preview");
   const booksList = document.querySelector("div#enwords-books");
 
   let pdfPath = "";
-  let previewUrl = "";
+  let previewShown = false;
 
   const update = () => {
     const validity = form.checkValidity();
@@ -43,8 +45,8 @@ async function onLoaded() {
       previewButtons.forEach((btn) => {
         btn.disabled = true;
       });
-      downloadLinks.forEach((link) => {
-        link.classList.add("disabled");
+      downloadButtons.forEach((btn) => {
+        btn.disabled = true;
       });
       return;
     }
@@ -55,9 +57,8 @@ async function onLoaded() {
     previewButtons.forEach((btn) => {
       btn.disabled = false;
     });
-    downloadLinks.forEach((link) => {
-      link.href = pdfPath;
-      link.classList.remove("disabled");
+    downloadButtons.forEach((btn) => {
+      btn.disabled = false;
     });
   };
 
@@ -84,14 +85,40 @@ async function onLoaded() {
 
   update();
 
+  function showPreview() {
+    previewIframes.forEach((iframe) => {
+      iframe.src = pdfPath;
+    });
+    previewShown = true;
+  }
+
   previewButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      showPreview();
+    });
+  });
+
+  downloadButtons.forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const blob = await fetch(pdfPath).then((res) => res.blob());
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      previewUrl = URL.createObjectURL(blob);
-      previewEmbeds.forEach((embed) => {
-        embed.src = previewUrl;
-      });
+      if (!previewShown) showPreview();
+
+      if (canSharePdf) {
+        const res = await fetch(pdfPath);
+        const cd = res.headers.get("Content-Disposition") ?? "";
+        const match = cd.match(/filename="([^"]+)"/);
+        const filename = match ? match[1] : "enwords.pdf";
+        const blob = await res.blob();
+        await navigator.share({ files: [new File([blob], filename, { type: "application/pdf" })] });
+      } else {
+        const printIframe = document.createElement("iframe");
+        printIframe.style.display = "none";
+        printIframe.src = pdfPath;
+        document.body.appendChild(printIframe);
+        printIframe.onload = () => {
+          printIframe.contentWindow.print();
+          setTimeout(() => printIframe.remove(), 1000);
+        };
+      }
     });
   });
 

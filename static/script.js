@@ -19,7 +19,7 @@ externalIcon.setAttribute("aria-hidden", "true");
 
 const books = fetch("/api/books").then((res) => res.json());
 
-const canSharePdf = navigator?.canShare?.({ files: [new File([""], "test.pdf", { type: "application/pdf" })] }) ?? false;
+const canShare = typeof navigator.share === "function";
 
 async function onLoaded() {
   const form = document.querySelector("form#enwords-form");
@@ -85,6 +85,7 @@ async function onLoaded() {
 
   update();
 
+  // TODO: プレビューは将来的に HTML テーブルに置き換える予定
   function showPreview() {
     previewIframes.forEach((iframe) => {
       iframe.src = pdfPath;
@@ -102,13 +103,8 @@ async function onLoaded() {
     btn.addEventListener("click", async () => {
       if (!previewShown) showPreview();
 
-      if (canSharePdf) {
-        const res = await fetch(pdfPath);
-        const cd = res.headers.get("Content-Disposition") ?? "";
-        const match = cd.match(/filename="([^"]+)"/);
-        const filename = match ? match[1] : "enwords.pdf";
-        const blob = await res.blob();
-        await navigator.share({ files: [new File([blob], filename, { type: "application/pdf" })] });
+      if (canShare) {
+        await navigator.share({ url: location.origin + pdfPath });
       } else {
         const printIframe = document.createElement("iframe");
         printIframe.style.display = "none";

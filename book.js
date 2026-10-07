@@ -37,8 +37,9 @@ export class UkaruEigo extends Book {
     const url = `https://ukaru-eigo.com/${this.ukaruEigoId}/`;
     console.log(`${this.name}データを ${url} からダウンロード中...`);
     const words = (await Tabletojson.convertUrl(url))[0].map((word) => ({
-      id: parseInt(word["No"] ?? word["No."] ?? word["番号"]),
-      en: (word["単語"] ?? word["英単語"] ?? word["熟語"] ?? "").trim(),
+      id: parseInt(word["No"] ?? word["No."] ?? word["連番"] ?? word["番号"]),
+      // 速読英熟語は「熟語」列が番号と見出しの 2 つあるため、2 つ目 (熟語_2) を優先する
+      en: (word["単語"] ?? word["英単語"] ?? word["熟語_2"] ?? word["熟語"] ?? "").trim(),
       jp: (word["意味"] ?? "").trim(),
     }));
 
@@ -58,7 +59,8 @@ export const books = {
   tango_ou: new UkaruEigo("単語王 2202", "tango-ou-word-list", "404604411X"),
   target1900: new UkaruEigo("英単語ターゲット 1900 (６訂版)", "target-1900-word-list", "4010346469"),
   target1900_5: new UkaruEigo("英単語ターゲット 1900 (５訂版)", "target-1900-5th-word-list", "4010339179"),
-  target1400only: new UkaruEigo("英単語ターゲット not 1900 but 1400", "target-1400-only"),
   target1400: new UkaruEigo("英単語ターゲット 1400 (５訂版)", "target-1400-word-list", "4010346477"),
+  target1200: new UkaruEigo("英単語ターゲット 1200 (改訂版)", "target-1200-word-list", "4010346485"),
   jukugotarget: new UkaruEigo("英熟語ターゲット 1000 (５訂版)", "jukugo-target-1000-list", "4010346493"),
+  sokujuku: new UkaruEigo("速読英熟語 (改訂版)", "sokujuku-list", "486531587X"),
 };

@@ -93,6 +93,11 @@ export async function writePDF(exam, stream = null) {
       { label: "単語・熟語", width: 100, align: wordAlign, ...headerCommon },
       { label: "意味", width: 150, align: "left", ...headerCommon },
     ];
+    const minRowHeight = clamp(560 / Math.ceil(exam[name].length / 2), 20, 40);
+    // pdfkit-table 0.2 は既定でページ残り 10% 未満になると改ページするため、
+    // 1 行分 (+ 余白) が収まらなくなったときだけ改ページするよう閾値を指定する
+    const pageContentHeight = doc.page.height - doc.page.margins.top - doc.page.margins.bottom;
+    const endOfPageThreshold = (minRowHeight + 16) / pageContentHeight;
     const rows = exam[name]
       .reduce(
         (rows, row) =>
@@ -111,7 +116,8 @@ export async function writePDF(exam, stream = null) {
           vertical: { disabled: false, width: 0.25, opacity: 1.0 },
         },
         padding: 4,
-        minRowHeight: clamp(560 / Math.ceil(exam[name].length / 2), 20, 40),
+        minRowHeight,
+        endOfPageThreshold,
         prepareHeader: () => doc.fontSize(10),
         prepareRow: (row, i, _j, _rectRow, { x, y, width, height }) => {
           (i === 0 ? [0, width] : [width]).forEach((dx) =>

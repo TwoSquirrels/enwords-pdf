@@ -53,7 +53,7 @@ async function onLoaded() {
 
     pdfPath =
       `/api/pdf/${bookSelect.value}` +
-      `?l=${leftInput.value ?? 1}&r=${rightInput.value ?? 5000}&n=${numInput.value ?? 50}&s=${seedInput.value}`;
+      `?l=${leftInput.value || 1}&r=${rightInput.value || 9999}&n=${numInput.value || 50}&s=${seedInput.value}`;
     previewButtons.forEach((btn) => {
       btn.disabled = false;
     });

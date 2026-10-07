@@ -51,12 +51,13 @@ export class UkaruEigo extends Book {
 
 export const books = {
   complete: new UkaruEigo("有名単語帳融合", "complete-word-list"),
+  complete_idiom: new UkaruEigo("有名熟語帳融合", "complete-idiom-list"),
   systan: new UkaruEigo("システム英単語 (５訂版)", "systan-word-list", "4796111379"),
   teppeki: new UkaruEigo("鉄壁 (改訂版)", "teppeki-word-list", "404604411X"),
   leap2: new UkaruEigo("改訂版 必携英単語 LEAP", "leap-modified-list", "4410144235"),
   leap: new UkaruEigo("(旧版) 必携英単語 LEAP", "leap-word-list", "4410144227"),
   passtan: new UkaruEigo("英検準１級 でる順パス単 (５訂版)", "passtan-p1-word-list", "401094983X"),
-  tango_ou: new UkaruEigo("単語王 2202", "tango-ou-word-list", "404604411X"),
+  tango_ou: new UkaruEigo("単語王 2202", "tango-ou-word-list", "490163500X"),
   target1900: new UkaruEigo("英単語ターゲット 1900 (６訂版)", "target-1900-word-list", "4010346469"),
   target1900_5: new UkaruEigo("英単語ターゲット 1900 (５訂版)", "target-1900-5th-word-list", "4010339179"),
   target1400: new UkaruEigo("英単語ターゲット 1400 (５訂版)", "target-1400-word-list", "4010346477"),

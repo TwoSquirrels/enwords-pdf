@@ -9,7 +9,7 @@ const app = new Hono();
 
 app.onError((err, c) => {
   console.error(err);
-  return c.status(500).text("Internal Server Error");
+  return c.text("Internal Server Error", 500);
 });
 
 app.use("*", serveStatic({ root: "./static" }));
@@ -31,7 +31,7 @@ app.get("/api/pdf/:bookId", async (c) => {
   const num = parseInt(c.req.query("n")) || 50;
   const seed = parseInt(c.req.query("s"), 16) || null;
 
-  if (!books.hasOwnProperty(bookId)) return c.status(404).json({ error: `${bookId} は存在しません。` });
+  if (!books.hasOwnProperty(bookId)) return c.json({ error: `${bookId} は存在しません。` }, 404);
   const book = books[bookId];
 
   const words = await book.fetch();
